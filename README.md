@@ -7,7 +7,7 @@ Yoder JB, G Gomez, and CJ Carlson. Zygomorphic flowers have fewer visitors. *bio
 
 Floral visitation data are derived from records archived in the [Web of Life](http://www.web-of-life.es) and [Interaction Web DataBase](https://www.nceas.ucsb.edu/interactionweb) repositories; source datasets and the repositories where each were obtained are given in [`data/references_all.csv`](data/references_all.csv).
 
-Updated as of 29 April 2020.
+Updated as of 3 July 2020.
 
 
 Contents

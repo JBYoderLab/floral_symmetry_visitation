@@ -1,7 +1,7 @@
 # Illustrating data set characteristics with a MAP
 # from code via CJC
 # assumes local environment
-# last used/modified jby, 2020.03.24
+# last used/modified jby, 2020.06.23
 
 # setwd('~/Documents/Academic/Active_projects/pollination_networks')
 
@@ -96,15 +96,13 @@ head(data.full)
 dim(data.full)
 
 
-# degree distributions! New as of 2020.03.20
-degrees <- read.csv("output/degree_per_plant_phy.csv", h=TRUE) %>% filter(!is.na(symmetry))
+# degree distributions! New as of 2020.06.22 
+degrees <- read.csv("output/degree_per_plant_phy.csv", h=TRUE) %>% filter(!is.na(symmetry)) 
 
-degrees <- degrees %>% left_join(meta[,c("web", "Latitude")]) %>% mutate(lat.x = sqrt(abs(Latitude)), lat.sc = (lat.x-mean(lat.x))/sd(lat.x), pc1.sc = PC1/sd(PC1, na.rm=TRUE), pc2.sc = PC2/sd(PC2, na.rm=TRUE), pc3.sc = PC3/sd(PC3, na.rm=TRUE), pc4.sc = PC4/sd(PC4, na.rm=TRUE), rel.mn.n.shared=mn.n.shared/n.poll) %>% select(plant, web, Latitude, lat.x, lat.sc, symmetry, PC1, PC2, PC3, PC4, pc1.sc, pc2.sc, pc3.sc, pc4.sc, n.poll, n.shared, rel.mn.n.shared)
+degrees <- degrees %>% left_join(meta[,c("web", "Latitude")]) %>% mutate(lat.x = sqrt(abs(Latitude)), lat.sc = (lat.x-mean(lat.x))/sd(lat.x), pc1.sc = PC1/sd(PC1, na.rm=TRUE), pc2.sc = PC2/sd(PC2, na.rm=TRUE), pc3.sc = PC3/sd(PC3, na.rm=TRUE), pc4.sc = PC4/sd(PC4, na.rm=TRUE), rel.mn.n.shared=mn.n.shared/n.poll, rel.mn.n.shared.a=mn.n.shared.a/n.poll, rel.mn.n.shared.z=mn.n.shared.z/n.poll) %>% select(plant, web, Latitude, lat.x, lat.sc, symmetry, PC1, PC2, PC3, PC4, pc1.sc, pc2.sc, pc3.sc, pc4.sc, n.poll, n.shared, rel.mn.n.shared, rel.mn.n.shared.a, rel.mn.n.shared.z)
 
 head(degrees)
 dim(degrees)
-
-
 
 # write out
 write.table(data.full, "output/full-network_stats-meta.txt", sep="\t", col.names=TRUE, row.names=FALSE, quote=FALSE)

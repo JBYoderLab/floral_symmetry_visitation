@@ -1,7 +1,7 @@
 # Analysis on characteristics of plant-pollinator associations
 # trying to focus the code a bit
 # assumes local environment
-# last used/modified jby, 2020.03.21
+# last used/modified jby, 2020.06.23
 
 # setwd('~/Documents/Academic/Active_projects/pollination_networks')
 
@@ -29,7 +29,7 @@ source("../shared/Rscripts/base_graphics.R")
 meta <- read.csv("data/references_all.csv", h=TRUE)
 
 # degree distributions! New as of 2020.03.21
-degrees <- read.csv("output/degree_per_plant_phy.csv", h=TRUE) %>% filter(!is.na(symmetry)) %>% left_join(meta %>% select(web, Latitude)) %>% mutate(lat.x = sqrt(abs(Latitude)), lat.sc = (lat.x-mean(lat.x, na.rm=TRUE))/sd(lat.x, na.rm=TRUE), pc1.sc = PC1/sd(PC1, na.rm=TRUE), pc2.sc = PC2/sd(PC2, na.rm=TRUE), rel.mn.n.shared=mn.n.shared/n.poll)
+degrees <- read.csv("output/degree_per_plant_phy.csv", h=TRUE) %>% filter(!is.na(symmetry)) %>% left_join(meta %>% select(web, Latitude)) %>% mutate(lat.x = sqrt(abs(Latitude)), lat.sc = (lat.x-mean(lat.x, na.rm=TRUE))/sd(lat.x, na.rm=TRUE), pc1.sc = PC1/sd(PC1, na.rm=TRUE), pc2.sc = PC2/sd(PC2, na.rm=TRUE), rel.mn.n.shared=mn.n.shared/n.poll, rel.mn.n.shared.a=mn.n.shared.a/n.poll, rel.mn.n.shared.z=mn.n.shared.z/n.poll)
 
 # check over
 head(degrees)
@@ -55,16 +55,22 @@ hist(sqrt(degrees$n.poll))
 
 dim(degrees) # 4035!
 
-degrees %>% group_by(symmetry) %>% summarize(mdPoll = median(n.poll), mnPoll=mean(n.poll), mdShare=median(rel.mn.n.shared, na.rm=TRUE), mnShare=mean(rel.mn.n.shared, na.rm=TRUE))
-#   symmetry      mdPoll mnPoll mdShare mnShare
-#  <chr>          <dbl>  <dbl>   <dbl>   <dbl>
-# actinomorphic      5   14.4   0.938    2.05
-# zygomorphic        4   11.7   0.967    1.93  
+degrees %>% group_by(symmetry) %>% summarize(mdPoll = median(n.poll), mnPoll=mean(n.poll), mdShare=median(rel.mn.n.shared, na.rm=TRUE), mnShare=mean(rel.mn.n.shared, na.rm=TRUE), mnShareA=mean(rel.mn.n.shared.a, na.rm=TRUE), mnShareZ=mean(rel.mn.n.shared.z, na.rm=TRUE))
+#   symmetry      mdPoll mnPoll mdShare mnShare mnShareA mnShareZ
+#   <chr>          <dbl>  <dbl>   <dbl>   <dbl>    <dbl>    <dbl>
+# 1 Actinomorphic      5   14.4   0.179   0.232    0.236    0.189
+# 2 Zygomorphic        4   11.7   0.198   0.269    0.267    0.298
+# ... HUH
 
-
+# comparing Act and Zyg species
 wilcox.test(n.poll~symmetry, data=degrees, alt="g") # p = 0.003
-wilcox.test(rel.mn.n.shared~symmetry, data=degrees, alt="l") # n.s.
+wilcox.test(rel.mn.n.shared~symmetry, data=degrees, alt="l") # p = 0.003
+wilcox.test(rel.mn.n.shared.a~symmetry, data=degrees, alt="l") # n.s.
+wilcox.test(rel.mn.n.shared.z~symmetry, data=degrees, alt="l") # p < 2.2e-16 HRM
 
+# comparing sharing with Act and Zyg species
+wilcox.test(degrees[degrees$symmetry=="Actinomorphic","mn.n.shared.a"], degrees[degrees$symmetry=="Actinomorphic","mn.n.shared.z"], paired=TRUE, alt="g") # p < 2.2e-16
+wilcox.test(degrees[degrees$symmetry=="Zygomorphic","mn.n.shared.a"], degrees[degrees$symmetry=="Zygomorphic","mn.n.shared.z"], paired=TRUE, alt="l") # p < 4.8e-05 
 
 # comparison with latitude ...
 cor.test(~n.poll+abs(Latitude), data=filter(degrees, symmetry=="actinomorphic"), method="sp") # cor = 0.39, p < 2.2e-16
@@ -86,8 +92,8 @@ ggplot(filter(degrees, matrix %in% mt3), aes(x=PC2, y=PC4, color=symmetry)) + ge
 ggplot(filter(degrees, matrix %in% mt3), aes(x=PC3, y=PC4, color=symmetry)) + geom_point() + theme(legend.position=c(0.25,0.75))
 
 
-dim(filter(degrees, symmetry=="actinomorphic")) # 3433
-dim(filter(degrees, symmetry=="zygomorphic")) # 610
+dim(filter(degrees, symmetry=="actinomorphic")) # 3420
+dim(filter(degrees, symmetry=="zygomorphic")) # 615
 
 #--------------------------------------------------------------------
 # okay formal model-fitting

@@ -35,6 +35,8 @@ Files containing data derived from compiling source data
 - `all-data_processing.R` --- Generating working files for further analysis
 	- requires: network data, `plant_degree-sharing.csv`, `whole-matrix_stats.csv`, `sub-matrix_stats.csv`, `references_all.csv`
 	- generates: `full-network_stats-meta.txt`, `sub-network_stats-meta.txt`, `plant_stats-meta.txt`
+- `phylogenetic_signal.R` --- Runs tests for phylogenetic signal in floral symmetry and visitor counts
+	- requires: `output/working_tree.tre`, `output/degree_per_plant_phy.csv`
 - `plant_degree_analysis.R` --- species-level analysis, model-fitting
 	- requires: `degree_per_plant_phy.csv`, `references_all.csv`
 	- generates: model-fitting and comparison results
